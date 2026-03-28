@@ -544,8 +544,8 @@ a:hover {
   z-index: 0;
 }
 
-/* Hero Background Image */
-.hero-bg-img {
+/* Hero Background Video */
+.hero-video {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -555,20 +555,11 @@ a:hover {
   z-index: 1;
 }
 
-/* Hide broken image alt text gracefully */
-.hero-bg-img[src=""],
-.hero-bg-img:not([src]) {
-  display: none;
-}
-
-.hero-bg-img::after {
-  content: '';
-  display: block;
-}
-
-/* If image fails to load, hide it so placeholder gradient shows */
-.hero-bg-img.img-error {
-  display: none;
+/* On mobile, reduce motion / bandwidth: pause video via JS, show poster */
+@media (prefers-reduced-motion: reduce) {
+  .hero-video {
+    display: none;
+  }
 }
 
 .hero-placeholder-bg {

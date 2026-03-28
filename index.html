@@ -304,9 +304,11 @@
   <!-- ========== HERO ========== -->
   <section class="hero" id="hero">
     <div class="hero-bg">
-      <!-- Replace src with actual hero image — recommended: 1920x1080 WebP -->
-      <img src="images/hero-bg.jpg" alt="Dhaba Square — Authentic North Indian dhaba-style dining with khatiya seating, smoky tandoor, and rich curries in Whitefield, Bangalore" class="hero-bg-img" width="1920" height="1080" loading="eager" fetchpriority="high">
-      <!-- Fallback gradient if image hasn't loaded -->
+      <!-- Autoplay muted looping background video -->
+      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="images/hero-bg.jpg">
+        <source src="images/herovideo.mp4" type="video/mp4">
+      </video>
+      <!-- Fallback gradient if video fails -->
       <div class="hero-placeholder-bg" aria-hidden="true"></div>
     </div>
     <div class="hero-overlay"></div>

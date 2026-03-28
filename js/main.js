@@ -4,15 +4,25 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ---------- Hero Image Error Handler ---------- */
-  const heroImg = document.querySelector('.hero-bg-img');
-  if (heroImg) {
-    heroImg.addEventListener('error', () => {
-      heroImg.classList.add('img-error');
+  /* ---------- Hero Video Fallback ---------- */
+  const heroVideo = document.querySelector('.hero-video');
+  if (heroVideo) {
+    heroVideo.addEventListener('error', () => {
+      heroVideo.style.display = 'none';
     });
-    // If already errored (cached)
-    if (heroImg.complete && heroImg.naturalWidth === 0) {
-      heroImg.classList.add('img-error');
+    // Pause video when out of viewport to save resources
+    const heroSection = document.getElementById('hero');
+    if (heroSection && 'IntersectionObserver' in window) {
+      const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            heroVideo.play().catch(() => {});
+          } else {
+            heroVideo.pause();
+          }
+        });
+      }, { threshold: 0.1 });
+      videoObserver.observe(heroSection);
     }
   }
 
@@ -296,14 +306,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* ---------- Hero Parallax Effect ---------- */
-  const heroImgParallax = document.querySelector('.hero-bg-img');
-  if (heroImgParallax) {
+  /* ---------- Hero Parallax Effect (Video) ---------- */
+  const heroVideoParallax = document.querySelector('.hero-video');
+  if (heroVideoParallax) {
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
       const heroHeight = document.querySelector('.hero').offsetHeight;
       if (scrollY < heroHeight) {
-        heroImgParallax.style.transform = `translateY(${scrollY * 0.3}px) scale(1.05)`;
+        heroVideoParallax.style.transform = `translateY(${scrollY * 0.3}px) scale(1.1)`;
       }
     }, { passive: true });
   }
