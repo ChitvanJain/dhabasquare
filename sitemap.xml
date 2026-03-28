@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.dhabasquare.com/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dhabasquare.com/"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.dhabasquare.com/?lang=hi"/>
+    <xhtml:link rel="alternate" hreflang="kn" href="https://www.dhabasquare.com/?lang=kn"/>
+    <lastmod>2025-03-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.dhabasquare.com/images/hero-bg.jpg</image:loc>
+      <image:title>Dhaba Square — Authentic North Indian Restaurant in Whitefield, Bangalore</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.dhabasquare.com/images/og-cover.jpg</image:loc>
+      <image:title>Dhaba Square — Khatiya Seating and North Indian Food</image:title>
+    </image:image>
+  </url>
+</urlset>
