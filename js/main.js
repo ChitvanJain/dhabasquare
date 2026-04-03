@@ -29,13 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- Top Bar Scroll Hide ---------- */
   const topBar = document.getElementById('topBar');
   const header = document.getElementById('siteHeader');
-  let lastScrollY = 0;
 
   /* ---------- Header Scroll Effect ---------- */
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
 
-    // Hide top bar on scroll down, show on scroll up
+    // Hide top bar after scroll threshold
     if (scrollY > 120) {
       topBar.classList.add('hidden');
       header.classList.add('top-bar-hidden');
@@ -117,15 +116,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Menu System ---------- */
   const menuGrid = document.getElementById('menuGrid');
-  const menuTabs = document.querySelectorAll('.tab-btn');
-  const filterBtns = document.querySelectorAll('.filter-btn');
 
-  let currentTab = 'starters';
-  let currentFilter = 'all';
+  if (menuGrid) {
+    const menuTabs = document.querySelectorAll('.tab-btn');
+    const filterBtns = document.querySelectorAll('.filter-btn');
 
-  function renderMenu() {
-    const items = MENU_DATA[currentTab] || [];
-    menuGrid.innerHTML = '';
+    let currentTab = 'starters';
+    let currentFilter = 'all';
+
+    function renderMenu() {
+      const items = MENU_DATA[currentTab] || [];
+      menuGrid.innerHTML = '';
 
     items.forEach((item, i) => {
       // Apply filter
@@ -162,34 +163,35 @@ document.addEventListener('DOMContentLoaded', () => {
       menuGrid.appendChild(card);
     });
 
-    // Show empty state if no items match filter
-    if (menuGrid.children.length === 0) {
-      menuGrid.innerHTML = '<p style="text-align:center;grid-column:1/-1;color:rgba(245,237,216,0.4);font-family:var(--font-accent);padding:40px 0;">No items match this filter in this category.</p>';
+      // Show empty state if no items match filter
+      if (menuGrid.children.length === 0) {
+        menuGrid.innerHTML = '<p style="text-align:center;grid-column:1/-1;color:rgba(245,237,216,0.4);font-family:var(--font-accent);padding:40px 0;">No items match this filter in this category.</p>';
+      }
     }
+
+    // Tab clicks
+    menuTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        menuTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentTab = tab.dataset.tab;
+        renderMenu();
+      });
+    });
+
+    // Filter clicks
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderMenu();
+      });
+    });
+
+    // Initial render
+    renderMenu();
   }
-
-  // Tab clicks
-  menuTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      menuTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      currentTab = tab.dataset.tab;
-      renderMenu();
-    });
-  });
-
-  // Filter clicks
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentFilter = btn.dataset.filter;
-      renderMenu();
-    });
-  });
-
-  // Initial render
-  renderMenu();
 
   /* ---------- Reviews Carousel ---------- */
   const reviewCards = document.querySelectorAll('.review-card');
@@ -225,51 +227,56 @@ document.addEventListener('DOMContentLoaded', () => {
   // Auto-rotate reviews
   reviewInterval = setInterval(nextReview, 6000);
 
-  /* ---------- Video Lazy Load ---------- */
+  /* ---------- Video Lazy Load (if videos section exists) ---------- */
   const videoPlaceholders = document.querySelectorAll('.video-placeholder');
 
-  videoPlaceholders.forEach(placeholder => {
-    placeholder.addEventListener('click', () => {
-      const wrapper = placeholder.closest('.video-wrapper');
-      const iframe = wrapper.querySelector('iframe');
-      const realSrc = iframe.getAttribute('data-src');
-
-      if (realSrc && realSrc !== 'about:blank') {
-        // Add autoplay to the src
-        const separator = realSrc.includes('?') ? '&' : '?';
-        iframe.src = realSrc + separator + 'autoplay=1';
-        placeholder.classList.add('loaded');
-      }
-    });
-  });
-
-  // Also lazy-load videos when they scroll into view (without autoplay)
-  const videoObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const wrapper = entry.target;
+  if (videoPlaceholders.length > 0) {
+    videoPlaceholders.forEach(placeholder => {
+      placeholder.addEventListener('click', () => {
+        const wrapper = placeholder.closest('.video-wrapper');
         const iframe = wrapper.querySelector('iframe');
         const realSrc = iframe.getAttribute('data-src');
 
-        // Don't auto-load, but preconnect
-        if (realSrc && realSrc.includes('youtube.com')) {
-          const link = document.createElement('link');
-          link.rel = 'preconnect';
-          link.href = 'https://www.youtube.com';
-          document.head.appendChild(link);
+        if (realSrc && realSrc !== 'about:blank') {
+          // Add autoplay to the src
+          const separator = realSrc.includes('?') ? '&' : '?';
+          iframe.src = realSrc + separator + 'autoplay=1';
+          placeholder.classList.add('loaded');
         }
-
-        videoObserver.unobserve(wrapper);
-      }
+      });
     });
-  }, { threshold: 0.1 });
 
-  document.querySelectorAll('.video-wrapper').forEach(w => videoObserver.observe(w));
+    // Also lazy-load videos when they scroll into view (without autoplay)
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const wrapper = entry.target;
+          const iframe = wrapper.querySelector('iframe');
+          const realSrc = iframe.getAttribute('data-src');
+
+          // Don't auto-load, but preconnect
+          if (realSrc && realSrc.includes('youtube.com')) {
+            const link = document.createElement('link');
+            link.rel = 'preconnect';
+            link.href = 'https://www.youtube.com';
+            document.head.appendChild(link);
+          }
+
+          videoObserver.unobserve(wrapper);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.video-wrapper').forEach(w => videoObserver.observe(w));
+  }
 
   /* ---------- Smooth Scroll for Anchor Links ---------- */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', (e) => {
-      const target = document.querySelector(anchor.getAttribute('href'));
+      const href = anchor.getAttribute('href');
+      if (href === '#' || href === '') return; // Skip empty/placeholder links
+
+      const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth' });
